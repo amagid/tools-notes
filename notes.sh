@@ -8,7 +8,7 @@ function quit() {
     exit
 }
 
-while getopts "hm" opt; do
+while getopts "hmb" opt; do
     case $opt in
         h)  printf "notes - Start new notes document\n"
             printf "\n"
@@ -24,10 +24,13 @@ while getopts "hm" opt; do
             printf "Options:\n"
             printf "    -h               Show script help\n"
             printf "    -m               Create using Meeting template\n"
+            printf "    -b               No Template. Open fully blank document \n"
             printf "\n\n"
             exit
         ;;
         m) templateName="meeting"
+        ;;
+        b) templateName=""
         ;;
         \?) printf "Unknown option '${opt}'"
             exit
@@ -35,12 +38,15 @@ while getopts "hm" opt; do
     esac
 done
 
-template="$TEMPLATESDIR/$templateName.md"
-currentDate=$(date +"%F")
+if [ ! -z "$templateName" ]
+then
+    template="$TEMPLATESDIR/$templateName.md"
+    currentDate=$(date +"%F")
 
-cat "$template" | sed "s/{DATE}/$currentDate/g" | clip.exe
+    cat "$template" | sed "s/{DATE}/$currentDate/g" | clip.exe
 
-printf "\e[1;33mRemember to paste!\e[0;37m\n"
+    printf "\e[1;33mRemember to paste!\e[0;37m\n"
+fi
 
 /mnt/c/Program\ Files/Typora/bin/typora
 
